@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EnergyAI | Smart Consumption Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <nav id="navbar" class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                <span>EnergyAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#predictor">Predictor</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="#predictor" class="btn btn-nav">Get Started</a>
+        </div>
+    </nav>
+
+    <section id="hero" class="hero">
+        <div class="hero-bg-pattern"></div>
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="badge">✨ v2.0 Machine Learning Engine</div>
+                <h1>Forecast Energy Demand with <span class="text-gradient">Precision</span></h1>
+                <p>Leverage our advanced Gradient Boosting Regressor to predict hourly electricity consumption. Optimize distribution, reduce costs, and power the future efficiently.</p>
+                <div class="hero-buttons">
+                    <a href="#predictor" class="btn btn-primary btn-lg">Launch Predictor <i class="fa-solid fa-arrow-right"></i></a>
+                    <a href="#about" class="btn btn-outline btn-lg">How it Works</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="section bg-light">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose EnergyAI?</h2>
+                <p>Enterprise-grade forecasting built for transmission system operators and energy providers.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon gradient-1"><i class="fa-solid fa-brain"></i></div>
+                    <h3>Advanced ML Models</h3>
+                    <p>Powered by Gradient Boosting with 24-hour lag features and temporal rolling statistics for unmatched accuracy.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon gradient-2"><i class="fa-solid fa-chart-line"></i></div>
+                    <h3>High Precision</h3>
+                    <p>Achieving an R² Score of > 0.99 on testing datasets spanning over 6 years of historical consumption data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon gradient-3"><i class="fa-solid fa-stopwatch"></i></div>
+                    <h3>Real-Time Analytics</h3>
+                    <p>Generate single-hour or full 24-hour daily consumption profiles in milliseconds with our optimized Flask backend.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon gradient-4"><i class="fa-solid fa-server"></i></div>
+                    <h3>Enterprise Ready</h3>
+                    <p>Seamlessly integrate our predictive endpoints into your existing grid management software via robust REST APIs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="predictor" class="section app-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Interactive Dashboard</h2>
+                <p>Test the model live. Generate single predictions or full daily forecasts.</p>
+            </div>
+
+            <div class="app-container">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="openTab(event, 'single-prediction')"><i class="fa-solid fa-crosshairs"></i> Single Forecast</button>
+                    <button class="tab-button" onclick="openTab(event, 'daily-prediction')"><i class="fa-solid fa-calendar-day"></i> Daily Profile</button>
+                    <button class="tab-button" onclick="openTab(event, 'statistics')"><i class="fa-solid fa-database"></i> Training Stats</button>
+                    <button class="tab-button" onclick="openTab(event, 'about-app')"><i class="fa-solid fa-code"></i> System Specs</button>
+                </div>
+
+                <div class="tab-content-wrapper">
+                    <div id="single-prediction" class="tab-content active">
+                        <div class="form-layout">
+                            <div class="form-side">
+                                <h3>Single Hour Prediction</h3>
+                                <p class="text-muted mb-4">Select a target date and hour to predict the MWh load.</p>
+                                <form id="single-prediction-form">
+                                    <div class="form-group">
+                                        <label for="date">Target Date</label>
+                                        <div class="input-wrapper">
+                                            <i class="fa-regular fa-calendar input-icon"></i>
+                                            <input type="date" id="date" name="date" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hour">Hour of Day (0-23)</label>
+                                        <div class="input-wrapper">
+                                            <i class="fa-regular fa-clock input-icon"></i>
+                                            <input type="number" id="hour" name="hour" min="0" max="23" value="12" required>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Run Prediction Engine</button>
+                                </form>
+                            </div>
+                            <div class="result-side">
+                                <div id="single-result" class="result-box" style="display:none;">
+                                    <h4><i class="fa-solid fa-circle-check text-success"></i> Forecast Generated</h4>
+                                    <div class="result-data">
+                                        <div class="data-row"><span>Date:</span> <strong id="result-date"></strong></div>
+                                        <div class="data-row"><span>Time:</span> <strong id="result-hour"></strong></div>
+                                        <div class="data-row"><span>Day:</span> <strong id="result-day"></strong></div>
+                                        <div class="data-row highlight-row">
+                                            <span>Predicted Load:</span>
+                                            <strong id="result-consumption" class="text-gradient"></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="empty-state" id="single-empty">
+                                    <i class="fa-solid fa-bolt text-muted" style="font-size: 3rem; opacity: 0.2;"></i>
+                                    <p>Results will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="daily-prediction" class="tab-content">
+                        <div class="dashboard-header">
+                            <div>
+                                <h3>24-Hour Load Profile</h3>
+                                <p class="text-muted">Generate a continuous forecast for an entire day.</p>
+                            </div>
+                            <form id="daily-prediction-form" class="inline-form">
+                                <div class="input-wrapper">
+                                    <i class="fa-regular fa-calendar input-icon"></i>
+                                    <input type="date" id="daily-date" name="date" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Generate Profile</button>
+                            </form>
+                        </div>
+
+                        <div id="daily-result" class="daily-result-wrapper" style="display:none;">
+                            <div class="stats-cards">
+                                <div class="stat-card">
+                                    <span class="stat-title">Total Daily Demand</span>
+                                    <span id="total-daily" class="stat-value text-gradient"></span>
+                                </div>
+                                <div class="stat-card">
+                                    <span class="stat-title">Average Hourly Load</span>
+                                    <span id="avg-hourly" class="stat-value text-gradient"></span>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="dailyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="statistics" class="tab-content">
+                        <div class="dashboard-header flex-between">
+                            <div>
+                                <h3>Dataset Statistics</h3>
+                                <p class="text-muted">Descriptive statistics from the 2016-2021 training data.</p>
+                            </div>
+                            <button class="btn btn-outline" onclick="loadStatistics()"><i class="fa-solid fa-cloud-arrow-down"></i> Fetch Data</button>
+                        </div>
+
+                        <div id="stats-result" style="display:none;">
+                            <div class="grid-stats">
+                                <div class="grid-stat-box"><span class="label">Mean</span><strong id="stat-mean"></strong></div>
+                                <div class="grid-stat-box"><span class="label">Median</span><strong id="stat-median"></strong></div>
+                                <div class="grid-stat-box"><span class="label">Std Dev</span><strong id="stat-std"></strong></div>
+                                <div class="grid-stat-box"><span class="label">Minimum</span><strong id="stat-min"></strong></div>
+                                <div class="grid-stat-box"><span class="label">Maximum</span><strong id="stat-max"></strong></div>
+                                <div class="grid-stat-box highlight-box"><span class="label">Total Records</span><strong id="stat-records"></strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="about-app" class="tab-content">
+                        <div class="about-grid">
+                            <div class="about-block">
+                                <h4>🎯 Project Objective</h4>
+                                <p>This project predicts hourly electricity consumption using machine learning techniques. It analyzes 6 years of historical data (2016-2021) from a transmission system operator.</p>
+                            </div>
+                            <div class="about-block">
+                                <h4>🧠 ML Approach</h4>
+                                <ul>
+                                    <li><strong>Model:</strong> Gradient Boosting Regressor</li>
+                                    <li><strong>Features:</strong> Lag features (24 hours), temporal features</li>
+                                    <li><strong>Performance:</strong> R² Score > 0.99</li>
+                                </ul>
+                            </div>
+                            <div class="about-block">
+                                <h4>📊 Data Insights</h4>
+                                <ul>
+                                    <li>Peak consumption occurs at 17:00 (5 PM)</li>
+                                    <li>Lowest consumption at 01:00 (1 AM)</li>
+                                    <li>Weekday consumption 6.8% higher than weekends</li>
+                                </ul>
+                            </div>
+                            <div class="about-block">
+                                <h4>🛠️ Technology Stack</h4>
+                                <div class="tech-tags">
+                                    <span>Flask</span><span>Python</span><span>Scikit-Learn</span><span>Pandas</span><span>Chart.js</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section stats-section gradient-bg text-white">
+        <div class="container">
+            <div class="counter-grid">
+                <div class="counter-item">
+                    <h2 class="counter" data-target="6">0</h2>
+                    <p>Years of Data</p>
+                </div>
+                <div class="counter-item">
+                    <h2 class="counter" data-target="52560">0</h2>
+                    <p>Hourly Records</p>
+                </div>
+                <div class="counter-item">
+                    <h2>> <span class="counter" data-target="99">0</span>%</h2>
+                    <p>R² Accuracy Score</p>
+                </div>
+                <div class="counter-item">
+                    <h2><span class="counter" data-target="24">0</span>/7</h2>
+                    <p>Forecasting Uptime</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <div class="split-layout">
+                <div class="split-image">
+                    <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Energy Grid">
+                    <div class="image-overlay-card">
+                        <i class="fa-solid fa-leaf"></i> Empowering sustainable grids.
+                    </div>
+                </div>
+                <div class="split-text">
+                    <div class="badge">About The Data</div>
+                    <h2>Transforming Raw Data into Actionable Insights</h2>
+                    <p>The foundation of EnergyAI lies in its comprehensive dataset provided by leading Transmission System Operators. By understanding the ebb and flow of historical energy demand, our models can anticipate future needs with staggering accuracy.</p>
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check text-success"></i> Accounts for seasonal variations</li>
+                        <li><i class="fa-solid fa-check text-success"></i> Adjusts for weekend vs. weekday dips</li>
+                        <li><i class="fa-solid fa-check text-success"></i> Identifies extreme weather consumption anomalies</li>
+                    </ul>
+                    <a href="#predictor" class="btn btn-outline mt-4">Try it now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section cta-section">
+        <div class="container text-center">
+            <h2>Ready to optimize your energy grid?</h2>
+            <p>Deploy our machine learning models directly into your infrastructure via our Enterprise API.</p>
+            <a href="#contact" class="btn btn-primary btn-lg mt-4">Contact Sales</a>
+        </div>
+    </section>
+
+    <section id="contact" class="section bg-light">
+        <div class="container">
+            <div class="section-header">
+                <h2>Get in Touch</h2>
+                <p>Have questions about integration or custom model training? Let us know.</p>
+            </div>
+            <div class="contact-layout">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p>Fill out the form and our engineering team will get back to you within 24 hours.</p>
+                    <div class="info-item">
+                        <div class="icon-box"><i class="fa-solid fa-envelope"></i></div>
+                        <span>rahulmandal.aids25@aidtm.ac.in</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon-box"><i class="fa-solid fa-location-dot"></i></div>
+                        <span>Ahmedabad</span>
+                    </div>
+                    <div class="info-item">
+                        <div class="icon-box"><i class="fa-solid fa-phone"></i></div>
+                        <span>+91 9587099848</span>
+                    </div>
+                </div>
+                <div class="contact-form-card">
+                    <form class="contact-form" onsubmit="event.preventDefault(); alert('Message sent successfully!');">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="Rahul Mandal" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Work Email</label>
+                            <input type="email" placeholder="rahul@company.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea rows="4" placeholder="How can we help you?" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                    <span class="brand-name">EnergyAI</span>
+                    <p class="mt-4 text-muted">Intelligent ML forecasting for a sustainable and optimized energy future.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#predictor">Predictor Demo</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Connect</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fa-brands fa-github"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Energy Consumption Prediction System.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <script>
+        // Sticky Navbar effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Hide empty state on single prediction submit
+        document.getElementById('single-prediction-form').addEventListener('submit', () => {
+            document.getElementById('single-empty').style.display = 'none';
+        });
+
+        // Animated Counters
+        const counters = document.querySelectorAll('.counter');
+        const speed = 200;
+
+        const animateCounters = () => {
+            counters.forEach(counter => {
+                const updateCount = () => {
+                    const target = +counter.getAttribute('data-target');
+                    const count = +counter.innerText;
+                    const inc = target / speed;
+                    if (count < target) {
+                        counter.innerText = Math.ceil(count + inc);
+                        setTimeout(updateCount, 15);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCount();
+            });
+        }
+
+        // Trigger counters when scrolled into view
+        let animated = false;
+        window.addEventListener('scroll', () => {
+            const statsSection = document.querySelector('.stats-section');
+            if(statsSection) {
+                const sectionPos = statsSection.getBoundingClientRect().top;
+                const screenPos = window.innerHeight;
+                if(sectionPos < screenPos && !animated){
+                    animateCounters();
+                    animated = true;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
